@@ -8,10 +8,12 @@ import Cookies from "js-cookie";
 export default function FileUpload() {
   // const { logoutSuccess } = useContext(AuthContext);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [folderFile, setFolderFile] = useState(String(""));
+  const [fileName, setFileName] = useState(String(""));
 
   const handleFileChange = (event) => {
     setSelectedFiles([...event.target.files]);
-    console.log("handlefilechange->",[...event.target.files])
+    // console.log("handlefilechange->",[...event.target.files])
   };
 
   const handleFileUpload = async () => {
@@ -19,25 +21,57 @@ export default function FileUpload() {
 
     for (const file of selectedFiles) {
       formData.append("data", file);
-      console.log("file of selectedfiles ->",file)
+      // console.log("file of selectedfiles ->",file)
     }
 
-    try {
-      await axios.post("http://localhost:3000/api/tools/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${Cookies.get("userAuthToken")}`
-        }
-      });
-      alert("Files uploaded successfully");
-    } catch (error) {
-      console.error("Error uploading files:", error);
-    }
-  };
+    await axios.post("http://localhost:3000/api/tools/upload", formData, {
+      headers: {
+             "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${Cookies.get("userAuthToken")}`
+            }
+          })
+          .then((response) => {
+            setFolderFile(response['data']['folder'])
+            alert("Files uploaded successfully");
+            setSelectedFiles([]); // once it shows that files are uploaded, it should remove the selected files to merge so that it doesn't confuse the user
+          })
+          .catch((error) => {
+            console.error("Error uploading files:", error);
+          });
+        };
+        
+  const handleFileDownload = async(folderpath) => {
+    await axios.get(`http://localhost:3000/api/tools/mergedFile/${folderpath}`, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${Cookies.get("userAuthToken")}`
+          },
+        responseType: 'arraybuffer'}) //we need to use arraybuffer 
+        .then((response) => {
+          // Create a Blob from the response data
+          // blob = binary large object -> often used for handling files 
+          const blob = new Blob([response.data], { type: response.headers['content-type'] });
+          
+          // Create a temporary URL for the blob -> blob is to bridge the gap between binary data and browser interacts 
+          const blobUrl = URL.createObjectURL(blob);
+      
+          // Create a link element and simulate a click to trigger download
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = 'Merged File.xlsx'; // Set the desired filename
+          link.click();
+      
+          // Clean up the temporary URL -> to prevent memory leak
+          URL.revokeObjectURL(blobUrl)
+        })
+          .catch((error) => {
+            console.error(error)
+          });
+            }
 
   return (
     <div className="container">
-      <h2>Merging Excel</h2>
+      <h2>Upload Excel</h2>
       <p>Upload the excel files you would like to combine</p>
       <input type="file" onChange={handleFileChange} multiple></input>
       
@@ -46,6 +80,9 @@ export default function FileUpload() {
       <ul>
         {selectedFiles.map((file,index)=> (<li key={index}>{file.name}</li>))}
       </ul>
+
+      <button onClick ={()=>handleFileDownload(folderFile)}>Download Merged File</button>
+      {/* <button onClick ={()=>handleFileDownload("1692515078063")}>Download Merged File</button> */}
     </div>
   );
 }

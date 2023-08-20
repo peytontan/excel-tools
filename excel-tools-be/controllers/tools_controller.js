@@ -3,13 +3,17 @@ require('dotenv').config()
 const {cloudinary} = require('../cloudinary_config')
 const fileModel = require("../models/file_model")
 const jwt = require("jsonwebtoken");
+const axios =  require("axios");
+
 
 
 const toolsControllers = {
     uploadFile: async (req, res) => {
         const userID = res.locals.authUserID;
-        console.log("current user: ",userID)
+        // console.log("current user: ",userID)
+        
         const nestedFolderPath = Date.now();
+
         const options = {
           use_filename: true,
           folder: `excels/${nestedFolderPath}`,
@@ -43,26 +47,8 @@ const toolsControllers = {
                     secureUrl: result.secure_url,
                     userID: userID
                 });
-            // console.log("result",result);
-            // console.log(uploadFile[x].tempFilePath)
         }
-        res.status(200).json({ msg: "Successfully uploaded" });
-    
-        //   const result = await cloudinary.uploader.upload(
-        //     uploadedFile.tempFilePath,
-        //     options
-        //   );
-        //   console.log("result",result);
-    
-   
-        //   await fileModel.create({
-        //     fileName: result.asset_id,
-        //     folderPath: result.folder,
-        //     filePublicId: result.public_id,
-        //     secureUrl: result.secure_url,
-        //   });
-    
-        //   res.status(200).json({ msg: "Successfully uploaded" });
+        res.status(200).json({ msg: "Successfully uploaded" , folder:nestedFolderPath});
         } catch (error) {
           console.error("Error:", error);
           res.status(500).json({ err: "Failed to upload" });
@@ -87,7 +73,8 @@ const toolsControllers = {
           }
     },
     deleteFile: async (req,res) => {
-        fileNamePublicId = req.body.file
+        fileNamePublicId = req.params.assetId
+        console.log(fileNamePublicId)
         try {
             const file = await cloudinary.api.delete_resources([fileNamePublicId],{type:"upload",resource_type:"raw"})
             await fileModel.deleteOne({filePublicId:fileNamePublicId})
@@ -98,6 +85,21 @@ const toolsControllers = {
             res.status(500).json({msg:"failed to delete"})
         }
     },
+    getFilesFromSubFolder: async (req,res) => {
+      // const userID = res.locals.authUserID;
+
+      folderName = req.params.folderPath
+      
+      console.log(folderName)
+      try {
+          const file = await cloudinary.api.resources({type:"upload",resource_type:"raw",prefix:`excels/${folderName}`})
+          // console.log(file)
+          res.status(200).json({msg:"successfully retrieved files from sub folder"})
+      } catch (error) {
+          console.log("error:",error)
+          res.status(500).json({msg:"failed to retrieve files from subfolder"})
+      }
+    },
     getMongoDb: async (req,res) => {
         const userID = res.locals.authUserID;  
         try {
@@ -107,7 +109,58 @@ const toolsControllers = {
         console.error(error);
         return res.status(400).json({ msg: "An error occurred, please try again" });
         }
-    }
+    },
+    getMergedFileFromSubFolder: async (req,res) => {
+      folderName = req.params.file
+      
+      console.log(folderName)
+      try {
+          const file = await cloudinary.api.resources({type:"upload",resource_type:"raw",prefix:`excels/${folderName}/Merged_Excel_File`})
+          // console.log(file['resources'][0].secure_url)
+          merged_file_secure_url = file['resources'][0].secure_url
+          let fileName = "Merged Excel"
+        
+          const response = await axios({
+            method: 'get',
+            url: merged_file_secure_url,
+            responseType: 'arraybuffer', // Set the response type to arraybuffer
+          });
+
+          res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+          res.setHeader('Content-Type', response.headers['content-type']); // Set the Content-Type based on the fetched file
+          res.send(response.data); // Send the response data
+          // res.status(200).json({msg:response.data})
+      } catch (error) {
+          console.log("error:",error)
+          res.status(500).json({msg:"failed to retrieve files from subfolder"})
+      }
+    },
+    getRawFileFromSubFolder: async (req,res) => {
+      fileNamePublicId = req.params.publicId
+
+      
+      console.log(fileNamePublicId)
+      try {
+          const file = await cloudinary.api.resources({type:"upload",resource_type:"raw",prefix:fileNamePublicId})
+          // console.log(file['resources'][0].secure_url)
+          merged_file_secure_url = file['resources'][0].secure_url
+          // let fileName = "Merged Excel"
+        
+          const response = await axios({
+            method: 'get',
+            url: merged_file_secure_url,
+            responseType: 'arraybuffer', // Set the response type to arraybuffer
+          });
+
+          res.setHeader('Content-Disposition', 'attachment');
+          res.setHeader('Content-Type', response.headers['content-type']); // Set the Content-Type based on the fetched file
+          res.send(response.data); // Send the response data
+          // res.status(200).json({msg:response.data})
+      } catch (error) {
+          console.log("error:",error)
+          res.status(500).json({msg:"failed to retrieve files from subfolder"})
+      }
+    },
 }
 
 module.exports = toolsControllers
