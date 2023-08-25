@@ -8,6 +8,25 @@ const cloudinary = require('cloudinary').v2;
 require('dotenv').config() //.config will look for the .env file and load all the var inside into the runtime environment. runtime env is contained in process.env
 const toolsRouter = require("./routers/tools_router")
 const fileUpload = require('express-fileupload');
+const functions = require('@google-cloud/functions-framework');
+
+functions.http('corsEnabledFunction', (req, res) => {
+  // Set CORS headers for preflight requests
+  // Allows GETs from any origin with the Content-Type header
+  // and caches preflight response for 3600s
+
+  res.set('Access-Control-Allow-Origin', '*');
+
+  if (req.method === 'OPTIONS') {
+    // Send response to OPTIONS requests
+    res.set('Access-Control-Allow-Methods', 'GET','POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+    res.set('Access-Control-Max-Age', '3600');
+    res.status(204).send('');
+  } else {
+    res.send('Hello World!');
+  }
+});
 
 // middleware to handle URL-encoded form data
 app.use(express.urlencoded({ extended: true }));
@@ -23,11 +42,14 @@ app.use(
     origin: "*",
   })
 );
+
 app.options("*", cors());
+
 
 // API endpoint routes
 app.use("/api/users", userRouter);
 app.use("/api/tools", toolsRouter);
+
 
 app.get("/api/test", (req, res) => {
   res.json("server works!");

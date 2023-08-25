@@ -115,7 +115,8 @@ const toolsControllers = {
       
       console.log(folderName)
       try {
-          const file = await cloudinary.api.resources({type:"upload",resource_type:"raw",prefix:`excels/${folderName}/Merged_Excel_File`})
+          const file = await cloudinary.api.resources({type:"upload",resource_type:"raw",prefix:`excels/${folderName}/stream_`})
+          // const file = await cloudinary.api.resources({type:"upload",resource_type:"raw",prefix:`excels/${folderName}/Merged_Excel_File`})
           // console.log(file['resources'][0].secure_url)
           merged_file_secure_url = file['resources'][0].secure_url
           let fileName = "Merged Excel"
@@ -161,6 +162,6 @@ const toolsControllers = {
           res.status(500).json({msg:"failed to retrieve files from subfolder"})
       }
     },
-}
+    }
 
 module.exports = toolsControllers
