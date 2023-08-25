@@ -12,6 +12,9 @@ import AuthProvider from './components/auth/AuthProvider'
 import Profile from "./components/ProfilePage";
 import Tool from "./components/Tool"
 import HomePage from "./components/HomePage"
+import { ChakraProvider } from '@chakra-ui/react'
+
+
 
 const router = createBrowserRouter([
   {
@@ -39,12 +42,14 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+<ChakraProvider>
 <React.StrictMode>
 <CookiesProvider>
       <AuthProvider>
           <RouterProvider router={router} />
       </AuthProvider>
   </CookiesProvider>  </React.StrictMode>
+</ChakraProvider>
 );
 
 

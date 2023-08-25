@@ -9,8 +9,8 @@ export default function FileUpload() {
   // const { logoutSuccess } = useContext(AuthContext);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [folderFile, setFolderFile] = useState(String(""));
-  const [fileName, setFileName] = useState(String(""));
-  const [response, setResponse] = useState();
+  // const [fileName, setFileName] = useState(String(""));
+  // const [response, setResponse] = useState();
 
 
   const handleFileChange = (event) => {

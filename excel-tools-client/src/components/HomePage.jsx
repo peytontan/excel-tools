@@ -3,6 +3,18 @@ import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/auth/AuthProvider";
 import Cookies from "js-cookie";
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+} from '@chakra-ui/react'
+
 
 export default function Login() {
   const navigate = useNavigate();
@@ -65,24 +77,62 @@ export default function Login() {
             };
 
 
+  // return (
+  //   <div>
+  //     <h1>Uploaded Excels</h1>
+  //     <ul>
+  //       <th>File Name</th>
+  //       <th>Date Uploaded</th>
+  //       {excelFiles.map((file, index) => (
+  //         <tr key={index}>
+  //           <td>{file.fileName}</td>
+  //           <td>{new Date(file.createdAt).toLocaleDateString()}</td>
+  //           <td>
+  //             <button onClick={()=>handleDelete(encodeURIComponent(file.filePublicId))}>Delete</button>
+  //             <button onClick={()=>handleRawFileDownload(encodeURIComponent(file.filePublicId),file.fileName)}>Download</button>
+  //             {/* need to use encodeURIComponent or else we will be seeing / in the params instead of %2F */}
+  //           </td>
+  //         </tr>
+  //       ))}
+  //     </ul>
+  //   </div>
+  // );
   return (
-    <div>
-      <h1>Uploaded Excels</h1>
-      <ul>
-        <th>File Name</th>
-        <th>Date Uploaded</th>
-        {excelFiles.map((file, index) => (
-          <tr key={index}>
-            <td>{file.fileName}</td>
-            <td>{new Date(file.createdAt).toLocaleDateString()}</td>
-            <td>
-              <button onClick={()=>handleDelete(encodeURIComponent(file.filePublicId))}>Delete</button>
-              <button onClick={()=>handleRawFileDownload(encodeURIComponent(file.filePublicId),file.fileName)}>Download</button>
-              {/* need to use encodeURIComponent or else we will be seeing / in the params instead of %2F */}
-            </td>
-          </tr>
-        ))}
-      </ul>
-    </div>
-  );
+    <TableContainer>
+    <Table variant='striped' colorScheme='teal'>
+      <TableCaption>Imperial to metric conversion factors</TableCaption>
+      <Thead>
+        <Tr>
+          <Th>File Name</Th>
+          <Th>Date Uploaded</Th>
+          <Th isNumeric>multiply by</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        <Tr>
+          <Td>inches</Td>
+          <Td>millimetres (mm)</Td>
+          <Td isNumeric>25.4</Td>
+        </Tr>
+        <Tr>
+          <Td>feet</Td>
+          <Td>centimetres (cm)</Td>
+          <Td isNumeric>30.48</Td>
+        </Tr>
+        <Tr>
+          <Td>yards</Td>
+          <Td>metres (m)</Td>
+          <Td isNumeric>0.91444</Td>
+        </Tr>
+      </Tbody>
+      <Tfoot>
+        <Tr>
+          <Th>To convert</Th>
+          <Th>into</Th>
+          <Th isNumeric>multiply by</Th>
+        </Tr>
+      </Tfoot>
+    </Table>
+  </TableContainer>
+  )
 }
