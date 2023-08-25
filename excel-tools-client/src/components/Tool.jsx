@@ -10,6 +10,8 @@ export default function FileUpload() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [folderFile, setFolderFile] = useState(String(""));
   const [fileName, setFileName] = useState(String(""));
+  const [response, setResponse] = useState();
+
 
   const handleFileChange = (event) => {
     setSelectedFiles([...event.target.files]);
@@ -39,35 +41,56 @@ export default function FileUpload() {
             console.error("Error uploading files:", error);
           });
         };
-        
-  const handleFileDownload = async(folderpath) => {
-    await axios.get(`http://localhost:3000/api/tools/mergedFile/${folderpath}`, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${Cookies.get("userAuthToken")}`
-          },
-        responseType: 'arraybuffer'}) //we need to use arraybuffer 
-        .then((response) => {
-          // Create a Blob from the response data
-          // blob = binary large object -> often used for handling files 
-          const blob = new Blob([response.data], { type: response.headers['content-type'] });
-          
-          // Create a temporary URL for the blob -> blob is to bridge the gap between binary data and browser interacts 
-          const blobUrl = URL.createObjectURL(blob);
+
+  
+        const handleFileDownload = async(folderpath) => {
+          const pythonScript = await executePythonScript(folderpath)
       
-          // Create a link element and simulate a click to trigger download
-          const link = document.createElement('a');
-          link.href = blobUrl;
-          link.download = 'Merged File.xlsx'; // Set the desired filename
-          link.click();
-      
-          // Clean up the temporary URL -> to prevent memory leak
-          URL.revokeObjectURL(blobUrl)
-        })
-          .catch((error) => {
-            console.error(error)
-          });
-            }
+          await axios.get(`http://localhost:3000/api/tools/mergedFile/${folderpath}`, {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                  Authorization: `Bearer ${Cookies.get("userAuthToken")}`
+                },
+              responseType: 'arraybuffer'}) //we need to use arraybuffer 
+              .then((response) => {
+                // Create a Blob from the response data
+                // blob = binary large object -> often used for handling files 
+                const blob = new Blob([response.data], { type: response.headers['content-type'] });
+                
+                // Create a temporary URL for the blob -> blob is to bridge the gap between binary data and browser interacts 
+                const blobUrl = URL.createObjectURL(blob);
+            
+                // Create a link element and simulate a click to trigger download
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = 'Merged File.xlsx'; // Set the desired filename
+                link.click();
+            
+                // Clean up the temporary URL -> to prevent memory leak
+                URL.revokeObjectURL(blobUrl)
+              })
+                .catch((error) => {
+                  console.error(error)
+                });
+                  }
+
+  const executePythonScript = async() => {
+    const response = await axios.post("https://asia-southeast1-seif-project-4-excel.cloudfunctions.net/merge_excel_files",
+    {folderFile:folderFile}, 
+      {headers:{
+        Authorization: `Bearer ${Cookies.get("userAuthToken")}`,
+      },
+    }
+    ).then((response) => {
+      console.log(response.data)
+    })
+      .catch((error) => {
+        console.error(error)
+      });
+        } 
+
+  console.log(folderFile)
+
 
   return (
     <div className="container">
@@ -82,7 +105,6 @@ export default function FileUpload() {
       </ul>
 
       <button onClick ={()=>handleFileDownload(folderFile)}>Download Merged File</button>
-      {/* <button onClick ={()=>handleFileDownload("1692515078063")}>Download Merged File</button> */}
     </div>
   );
 }
