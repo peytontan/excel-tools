@@ -5,14 +5,13 @@ import reportWebVitals from './reportWebVitals';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Authenticated from './components/auth/AuthenticatedOnly';
 import Guest from './components/auth/GuestOnly';
-import Register from "./components/RegisterPage";
-import Login from "./components/LoginPage";
+import Register from "./components/UserLoginRegistration/RegisterPage";
+import Login from "./components/UserLoginRegistration/LoginPage";
 import { CookiesProvider } from 'react-cookie';
 import AuthProvider from './components/auth/AuthProvider'
 import Profile from "./components/ProfilePage";
 import Tool from "./components/Tool"
 import HomePage from "./components/HomePage"
-import { ChakraProvider } from '@chakra-ui/react'
 
 
 
@@ -42,14 +41,12 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-<ChakraProvider>
 <React.StrictMode>
 <CookiesProvider>
       <AuthProvider>
           <RouterProvider router={router} />
       </AuthProvider>
   </CookiesProvider>  </React.StrictMode>
-</ChakraProvider>
 );
 
 

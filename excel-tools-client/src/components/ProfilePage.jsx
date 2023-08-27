@@ -17,10 +17,8 @@ export default function ProfilePage() {
         <div className="container">
             <h2>Profile Page</h2>
 
-            <p>Can only see if logged in</p>
-
-            <button className="btn btn-danger" onClick={logoutSuccess}>Logout</button>
-            <button className="btn btn-excel-tool" onClick={handleTryTool}>Try our tool</button>
+            <button className="px-4 py-1 text-sm text-blue-600 font-semibold rounded-full border border-blue-200 hover:text-white hover:bg-blue-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2" onClick={logoutSuccess}>Logout</button>
+            <button className="px-4 py-1 text-sm text-blue-600 font-semibold rounded-full border border-blue-200 hover:text-white hover:bg-blue-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-800 focus:ring-offset-2" onClick={handleTryTool}>Try our tool</button>
         </div>
     )
 }
