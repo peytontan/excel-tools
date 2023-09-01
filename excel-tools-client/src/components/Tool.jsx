@@ -3,16 +3,10 @@ import { AuthContext } from "../components/auth/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Fragment } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { Disclosure, Menu } from "@headlessui/react";
 import { PaperClipIcon } from "@heroicons/react/20/solid";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import {
   ToolButton,
-  DeleteIcon,
-  RegenerateIcon,
-  DownloadMergedFile,
-  DownloadRawFile,
   LogOutIcon,
   FileInput,
   uploadIcon,
@@ -184,7 +178,7 @@ export default function FileUpload() {
         <main>
           <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
             <div className="container mx-auto max-width:1280px">
-              <p>Upload the excel files you would like to merge</p>
+              <p className="font-medium text-sm">Upload the excel files you would like to merge</p>
 
               {/* <div class="container mx-auto max-width:1280px"> */}
               <div class="flex flex-row">

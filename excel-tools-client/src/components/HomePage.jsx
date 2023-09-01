@@ -233,36 +233,31 @@ export default function Login() {
           </div>
         </header> */}
         <main>
-          <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-            <div class="flex flex-col">
-              <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                  <div class="overflow-hidden">
-                    <table class="min-w-full text-left text-sm font-light">
-                      <thead class="font-medium dark:border-neutral-500">
-                        {/* <thead class="border-b font-medium dark:border-neutral-500"> */}
+          <div className="flex justify-center mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+            <table className="container mx-auto max-width:1280px">
+                      <thead className="font-semibold dark:border-neutral-500">
                         <tr>
                           <th
                             scope="col"
-                            class="py-4 text-center justify-left"
+                            className="py-4 text-center"
                           >
                             File Name
                           </th>
                           <th
                             scope="col"
-                            class="py-4 text-center justify-evenly"
+                            className="py-2 px-4 text-center"
                           >
                             Created At
                           </th>
                           <th
                             scope="col"
-                            class="py-4 text-center justify-evenly"
+                            className="py-2 px-4 text-center"
                           >
                             Session Id
                           </th>
                           <th
                             scope="col"
-                            class="py-4 text-center justify-evenly"
+                            className="py-2 px-4 text-center"
                           >
                             Action
                           </th>
@@ -272,29 +267,26 @@ export default function Login() {
                         {/* {excelFiles.map((file, index) => ( */}
                         {currentItems.map((file, index) => (
                           <tr
-                            class="transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-zinc-200"
+                          className="transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-zinc-200"
                             key={index}
                           >
                             {/* <tr class="border-b transition duration-300 ease-in-out hover:bg-neutral-100 dark:border-neutral-500 dark:hover:bg-zinc-300" key={index}> */}
-                            <div className="flex justify-left">
-                            <td class="whitespace-nowrap px-10 py-3 justify-evenly">
+                            <td className="py-2 px-4 whitespace-nowrap text-center">
                               {file.fileName}
                             </td>
-                            </div>
-                            <td class="whitespace-nowrap px-10 py-3 justify-evenly">
+
+                            <td className="py-2 px-4 whitespace-nowrap text-center">
                               {new Date(
                                 new Date(file.createdAt).toISOString()
                               ).toLocaleString("en-GB")}
                             </td>
                           
-                            <div className="flex justify-center">
-                            <td class="whitespace-nowrap px-10 py-3 justify-evenly">
+
+                            <td className="py-2 px-4 whitespace-nowrap text-center">
                               {file.folderPath.split("/")[1]}
                             </td>
-                            </div>
-                            <td>
-                              <div className="flex justify-center">
 
+                            <td className="py-2 px-4 flex justify-center space-x-0">
                               <ToolButton
                                 onClick={() =>
                                   handleDelete(
@@ -334,17 +326,12 @@ export default function Login() {
                               >
                                 {RegenerateIcon()}
                               </ToolButton>
-                              </div>
                             </td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
-                  </div>
-                </div>
               </div>
-            </div>
-          </div>
         </main>
 
       </div>
@@ -354,7 +341,6 @@ export default function Login() {
             <button
               key={pageNumber}
               onClick={() => setCurrentPage(pageNumber)}
-              // className={currentPage === pageNumber ? "selected" : ""}
               className={`relative z-10 rounded-md inline-flex items-center px-4 py-2 text-sm font-semibold text-black focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-200 ${
                 currentPage === pageNumber ? 'bg-gray-200' :  "bg-white"}`}
             >
