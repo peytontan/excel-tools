@@ -63,11 +63,11 @@ def merge_excel_files(request:flask.Request):
         print("subfolder path",subfolder_path)
         # print("getting request.args",request.args)
 
-
         file_links = []
+        print("these are the current file links",file_links)
 
         # Get all the files from cloudinary if the resource type is raw
-        retrieve_files_in_cloudinary = cloudinary.api.resources(type="upload",resource_type="raw",prefix=f'excels/{subfolder_path}')
+        retrieve_files_in_cloudinary = cloudinary.api.resources(type="upload",resource_type="raw",prefix=f'excels/{subfolder_path}/tmp')
 
         # Get all the secure URL links and append them into file_links so that we can use the files 
         for resource in retrieve_files_in_cloudinary['resources']:
@@ -94,13 +94,20 @@ def merge_excel_files(request:flask.Request):
                     combined_data[sheet_name] = df
 
         output_file_buffer = BytesIO()
-        print(output_file_buffer)
         with pd.ExcelWriter(output_file_buffer, engine='openpyxl') as writer:
             for sheet_name, df_combined in combined_data.items():
                 df_combined.to_excel(writer, sheet_name=sheet_name, index=False)
         
-        
-        # Upload the merged Excel file to Cloudinary
+        # Check if there is an existing merged file, if there is delete it so that user can retrieve the latest merged file
+        stream_files_in_cloudinary = cloudinary.api.resources(type="upload",resource_type="raw",prefix=f'excels/{subfolder_path}/stream')
+        for resource in stream_files_in_cloudinary['resources']:
+            if "stream" in resource['public_id']:
+                image_delete_result = cloudinary.api.delete_resources(resource['public_id'], resource_type="raw", type="upload")
+                print("exisiting merged file has been deleted",image_delete_result)
+            else: 
+                print ("no existing merged file found")
+
+        # Upload the merged Excel file to Cloudinary 
         output_file_buffer.seek(0)
         upload_merge_file_cloudinary = cloudinary.uploader.upload(output_file_buffer, resource_type="raw",folder=f"excels/{subfolder_path}",use_filename=True)
 
@@ -110,6 +117,7 @@ def merge_excel_files(request:flask.Request):
 
         return ("Sucessfully merged",200)
     except Exception as e:
+        print("error occurred lol")
         return str(e)
     
 # Main entry point for google cloud function
