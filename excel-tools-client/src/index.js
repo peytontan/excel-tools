@@ -9,7 +9,6 @@ import Register from "./components/UserLoginRegistration/RegisterPage";
 import Login from "./components/UserLoginRegistration/LoginPage";
 import { CookiesProvider } from 'react-cookie';
 import AuthProvider from './components/auth/AuthProvider'
-import Profile from "./components/ProfilePage";
 import Tool from "./components/Tool"
 import HomePage from "./components/HomePage"
 
@@ -29,13 +28,9 @@ const router = createBrowserRouter([
       element: <Guest component={Login} />,
   },
   {
-    path: "/profile",
-    element: <Authenticated component={Profile} />,
-  },
-  {
     path: "/tool",
     element: <Authenticated component={Tool}/>
-  }
+  },
 
 ]);
 
