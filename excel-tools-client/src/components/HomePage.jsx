@@ -5,8 +5,6 @@ import { AuthContext } from "../components/auth/AuthProvider";
 import Cookies from "js-cookie";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import {
   ToolButton,
   DeleteIcon,
