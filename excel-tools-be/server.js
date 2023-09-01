@@ -57,10 +57,10 @@ app.get("/api/test", (req, res) => {
 
 // LISTENER
 mongoose
-  .connect(`mongodb://localhost:27017/excel-tools`) //to change when its done
-//   .connect(
-//     `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?retryWrites=true&w=majority`
-//   )
+  // .connect(`mongodb://localhost:27017/excel-tools`) //to change when its done
+  .connect(
+    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?retryWrites=true&w=majority`
+  )
   .then(() => {
     console.log("DB connected");
 
